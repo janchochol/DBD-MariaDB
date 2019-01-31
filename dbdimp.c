@@ -6499,6 +6499,10 @@ my_ulonglong mariadb_db_async_result(SV* h, MYSQL_RES** resp)
 
     if (mysql_errno(svsock))
     {
+      if(htype == DBIt_ST) {
+          D_imp_sth(h);
+          DBIc_ACTIVE_off(imp_sth);
+      }
       mariadb_dr_do_error(h, mysql_errno(svsock), mysql_error(svsock), mysql_sqlstate(svsock));
       return -1;
     }
@@ -6536,6 +6540,10 @@ my_ulonglong mariadb_db_async_result(SV* h, MYSQL_RES** resp)
       imp_sth->warning_count = mysql_warning_count(imp_dbh->pmysql);
     }
   } else {
+     if(htype == DBIt_ST) {
+         D_imp_sth(h);
+         DBIc_ACTIVE_off(imp_sth);
+     }
      mariadb_dr_do_error(h, mysql_errno(svsock), mysql_error(svsock),
               mysql_sqlstate(svsock));
      return (my_ulonglong)-1;
